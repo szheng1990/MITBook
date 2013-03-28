@@ -1,5 +1,8 @@
 <div class="page-header">
-   <h1><%= @user.full_name %></h1>
+   <div class="row">
+   <%= image_tag @user.gravatar_url, class: 'img-circle span1' %>
+   <h2 class="span7"><%= @user.full_name %></h2>
+   </div>
 </div>
 
 <% if @statuses %>
