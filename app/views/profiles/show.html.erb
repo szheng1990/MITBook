@@ -2,8 +2,10 @@
    <div class="row">
    <%= image_tag @user.gravatar_url, class: 'img-circle span1' %>
    <h2 class="span7"><%= @user.full_name %></h2>
+   <%= link_to "Add Friend", new_user_friendship_path(:friend_id => @user.id), class: 'btn btn-success pull-right'%>
    </div>
 </div>
+
 
 <% if @statuses %>
   <% @statuses.each do |status| %>

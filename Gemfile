@@ -11,6 +11,8 @@ gem 'devise'
 
 gem 'simple_form'
 
+gem 'state_machine'
+
 group :development, :test do 
    gem 'sqlite3'
 end
