@@ -28,7 +28,7 @@ class UserFriendshipsController < ApplicationController
            if @user_friendship.new_record? # new record means not saved! yet
                flash[:error] = "There was problem creating that friend request."
            else
-               flash[:success] = "Friend request sent."
+               flash[:notice] = "Friend request sent."
            end
            redirect_to profile_path(@friend.profile_name)
 
@@ -42,7 +42,7 @@ class UserFriendshipsController < ApplicationController
         @user_friendship = current_user.user_friendships.find(params[:id])
         if @user_friendship.update_attributes(:state => 'accepted') && 
            @user_friendship.accept_mutual_friendship! #linked to state machine
-           flash[:success] = "You are now friends with #{@user_friendship.friend.full_name}!"
+           flash[:notice] = "You are now friends with #{@user_friendship.friend.full_name}!"
         else
            flash[:error] = "Unable to friend #{user_friendship.friend}, please retry"   
         end
@@ -58,7 +58,7 @@ class UserFriendshipsController < ApplicationController
         @user_friendship = current_user.user_friendships.find(params[:id])
         @friend = @user_friendship.friend 
         if @user_friendship.destroy
-           flash[:success] = "you are no longer friends with #{@friend.full_name}"
+           flash[:notice] = "you are no longer friends with #{@friend.full_name}"
         else
            flash["error"] = "Unable to delete #{@friend.full_name}. Please retry"      
         end

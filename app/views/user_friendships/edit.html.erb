@@ -4,7 +4,7 @@
 
 
 <div class="form-actions">
-  <% if @user_friendship.requested? %>
+  <% if @user_friendship.state == 'requested' %>
     <%= form_for @user_friendship, url: accept_user_friendship_path(@user_friendship), method: :put do |form| %>
       <%= submit_tag "Accept Friendship", class: 'btn btn-primary' %>
     <% end %>

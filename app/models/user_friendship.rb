@@ -5,7 +5,7 @@ class UserFriendship < ActiveRecord::Base
     attr_accessible :user, :friend, :user_id, :friend_id, :state
 
     after_destroy :delete_mutual_friendship!
-
+'''
     state_machine :state, initial: :pending do 
         after_transition on: :accepted, do: [:send_acceptance_email, :accept_mutual_friendship!]
         state :requested 
@@ -13,6 +13,7 @@ class UserFriendship < ActiveRecord::Base
            transition any => :accepted
         end
     end
+'''
 
     def self.request(user1, user2)
        # class method
