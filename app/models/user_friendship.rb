@@ -36,12 +36,12 @@ class UserFriendship < ActiveRecord::Base
     def accept_mutual_friendship!
        # Grad the mutual friendship and update the state
        mutual_friendship = self.class.where({user_id: friend_id, friend_id: user_id}).first
-       mutual_friendship.update_attribute(:state, 'accepted')
+       mutual_friendship.update_attributes(:state =>'accepted')
     end
 
     def delete_mutual_friendship!
        mutual_friendship = self.class.where({user_id: friend_id, friend_id: user_id}).first
-       mutual_friendship.delete 
+       mutual_friendship.delete  
 
 
     end

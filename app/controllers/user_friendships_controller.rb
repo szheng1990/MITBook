@@ -9,6 +9,7 @@ class UserFriendshipsController < ApplicationController
 
        if params[:friend_id]
           @friend = User.find(params[:friend_id])
+          raise ActiveRecord::RecordNotFound if @friend.nil?
           @user_friendship = current_user.user_friendships.new(friend: @friend)
           #render action: :new #optional
        else
@@ -39,7 +40,8 @@ class UserFriendshipsController < ApplicationController
 
     def accept
         @user_friendship = current_user.user_friendships.find(params[:id])
-        if @user_friendship.accept! #linked to state machine
+        if @user_friendship.update_attributes(:state => 'accepted') && 
+           @user_friendship.accept_mutual_friendship! #linked to state machine
            flash[:success] = "You are now friends with #{@user_friendship.friend.full_name}!"
         else
            flash[:error] = "Unable to friend #{user_friendship.friend}, please retry"   
@@ -55,11 +57,11 @@ class UserFriendshipsController < ApplicationController
     def destroy
         @user_friendship = current_user.user_friendships.find(params[:id])
         @friend = @user_friendship.friend 
-        if @user_friendship.delete
+        if @user_friendship.destroy
            flash[:success] = "you are no longer friends with #{@friend.full_name}"
         else
-           flash["error"] = "Unable to delete #{@friend.full_name}. Please retry"
-        redirect_to user_friendships_path
+           flash["error"] = "Unable to delete #{@friend.full_name}. Please retry"      
         end
+        redirect_to user_friendships_path
     end
 end
