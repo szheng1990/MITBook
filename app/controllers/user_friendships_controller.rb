@@ -1,5 +1,7 @@
 class UserFriendshipsController < ApplicationController
     before_filter :authenticate_user! #only: [:new]
+    respond_to :html, :json
+
     def index
        @user_friendships =current_user.user_friendships.all 
     end
@@ -25,12 +27,22 @@ class UserFriendshipsController < ApplicationController
         if params[:user_friendship] && params[:user_friendship].has_key?(:friend_id)
            @friend = User.find(params[:user_friendship][:friend_id])
            @user_friendship = UserFriendship.request(current_user, @friend)
-           if @user_friendship.new_record? # new record means not saved! yet
-               flash[:error] = "There was problem creating that friend request."
-           else
-               flash[:notice] = "Friend request sent."
+           respond_to do |format|
+             if @user_friendship.new_record? # new record means not saved! yet
+                format.html do 
+                 flash[:error] = "There was problem creating that friend request."
+                 redirect_to profile_path(@friend.profile_name)
+                end
+                format.json { render json: @user_friendship.to_json, status: :precondition_failed}
+             else
+                format.html do 
+                 flash[:notice] = "Friend request sent."
+                 redirect_to profile_path(@friend.profile_name)
+                end 
+                format.json {render json: @user_friendship.to_json }
+             end
+             
            end
-           redirect_to profile_path(@friend.profile_name)
 
         else
            flash[:error] = "Friend Required"
@@ -50,8 +62,14 @@ class UserFriendshipsController < ApplicationController
     end
 
     def edit 
-        @user_friendship = current_user.user_friendships.find(params[:id])
-        @friend = @user_friendship.friend
+        if params[:friend_id] # get user_friendship by friend id
+
+            @user_friendship = current_user.user_friendships.where(friend_id: params[:friend_id]).first.decorate
+            @friend = @user_friendship.friend
+        else #get user_friendship by friendship id
+            @user_friendship = current_user.user_friendships.find(params[:id]).decorate
+            @friend = @user_friendship.friend
+        end 
     end
 
     def destroy

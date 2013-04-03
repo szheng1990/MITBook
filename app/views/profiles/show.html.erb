@@ -2,7 +2,15 @@
    <div class="row">
    <%= image_tag @user.gravatar_url, class: 'img-circle span1' %>
    <h2 class="span7"><%= @user.full_name %></h2>
-   <%= link_to "Add Friend", new_user_friendship_path(:friend_id => @user.id), class: 'btn btn-success pull-right'%>
+   <% if user_signed_in? %>
+   <div id="friend-status">
+     <% if current_user.friends.include?(@user) || current_user.pending_friends.include?(@user)%>
+        <%= link_to "Edit Friendship", edit_user_friendship_path(friend_id: @user.id), class: 'btn btn-success pull-right' %>
+     <% else %>
+        <%= link_to "Add Friend", new_user_friendship_path(:friend_id => @user.id), class: 'btn btn-success pull-right', id: 'add-friendship', data: { friend_id: @user.id } %>
+     <% end %>
+   </div>
+   <% end %>
    </div>
 </div>
 
